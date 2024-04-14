@@ -1,0 +1,61 @@
+/* Original by Jim Loos. Modified by smbaker for H8 project */
+
+Name vid;
+Partno G22V10#2;
+Revision;
+Date 09/1/2023;
+Designer Scott Baker;
+Company ;
+Location ;
+Assembly AIM-65 Display Video;
+Device G22V10;
+
+/* Inputs: */
+Pin 1  = NOT_CCLK_IN;
+Pin 2  = CCLK;
+Pin 3  = CURSOR;
+Pin 4  = MA13;
+Pin 5  = DISPLAY_EN;
+Pin 6  = VSYNC;
+Pin 7  = HSYNC;
+Pin 8  = TTLVID;
+Pin 9  = DCLK;
+Pin 10 = NC0;
+Pin 11 = NC1;
+Pin 13 = CARRY163;
+
+/* Outputs:  */
+Pin 23 = NC2;
+Pin 22 = NOT_CCLK_OUT;
+Pin 21 = VID_OUT;
+Pin 20 = VS_OUT;
+Pin 19 = HS_OUT;
+Pin 18 = COMP_SYNC;
+Pin 17 = DEL_DISPLAY_EN;
+Pin 16 = DEL_INVERT;
+Pin 15 = LOAD163;
+Pin 14 = FLOPCLK;
+
+NOT_CCLK_OUT = !CCLK;
+
+/*
+MA13=L, CURSOR=L X=H XI=L
+MA13=H, CURSOR=L X=L XI=H
+MA13=L, CURSOR=H X=L XI=H
+MA13=H, CURSOR=H X=H XI=L
+*/
+
+DEL_DISPLAY_EN.D = DISPLAY_EN;
+DEL_INVERT.D = (CURSOR & !MA13) # (!CURSOR & MA13);
+
+TTLVID1 = (TTLVID & DEL_INVERT) # (!TTLVID & !DEL_INVERT);
+VID_OUT = !(!DEL_DISPLAY_EN # TTLVID1);
+
+/* VID_OUT = !TTLVID; */
+COMP_SYNC = !(VSYNC # HSYNC);
+
+VS_OUT = VSYNC;
+HS_OUT = HSYNC;
+
+LOAD163 = !CARRY163;
+FLOPCLK = !(!CARRY163 # DCLK);

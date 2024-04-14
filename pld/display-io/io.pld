@@ -1,0 +1,63 @@
+/* Original by Jim Loos. Modified by smbaker for H8 project */
+
+Name io;
+Partno G22V10#2;
+Revision;
+Date 09/1/2023;
+Designer Scott Baker;
+Company ;
+Location ;
+Assembly AIM-65 Display IO;
+Device G22V10;
+
+/* Inputs: */
+Pin 1  = DISPEN;
+Pin 2  = A15;
+Pin 3  = A14;
+Pin 4  = A13;
+Pin 5  = A12;
+Pin 6  = A11;
+Pin 7  = A10;
+Pin 8  = A9;
+Pin 9  = A8;
+Pin 10 = A7;
+Pin 11 = R;
+Pin 13 = BO2;
+
+/* Outputs:  */
+Pin 23 = BDIR;
+Pin 22 = ROUT;
+Pin 21 = !SEL;
+Pin 20 = !VRAM_RD;
+Pin 19 = !VRAM_WR;
+Pin 18 = !ROM_RD;
+Pin 17 = !DISP_CS;
+Pin 16 = !RBEN;
+Pin 15 = D7;
+Pin 14 = !BOARDEN;  /* XXX NEEDS BODGE HERE */
+
+/* temporarily use D000 instead of 9000 */
+
+ADDR_9XXX = A15 & A14 & !A13 & A12;
+ADDR_VRAM = ADDR_9XXX & !A11;                   /* 9000 to 97FF */
+ADDR_IO = ADDR_9XXX & A11 & !A10 & !A9 & !A8;   /* 9800 to 98FF */
+ADDR_ROM = ADDR_9XXX & A11 & (A10 # A9 # A8);   /* 9900 to 9FFF */
+
+ADDR_CRTC = ADDR_IO & (!A7);                    /* 9800 to 987F */
+ADDR_DISPEN = ADDR_IO & A7;                     /* 9880 to 98FF */
+
+BDIR = R;
+ROUT = R;
+SEL = ADDR_VRAM;
+RBEN = ADDR_VRAM & BO2;
+
+ROM_RD = ADDR_ROM & R & BO2;
+VRAM_RD = (ADDR_VRAM & R) # (!ADDR_VRAM);  /* XXX verify doesn't use O2 */
+VRAM_WR = ADDR_VRAM & !R & BO2;            /* XXX verify O2 */
+
+DISP_CS = ADDR_CRTC;
+
+BOARDEN = BO2 & ADDR_9XXX;
+
+D7 = DISPEN;
+D7.OE = ADDR_DISPEN & R & BO2;
