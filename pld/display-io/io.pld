@@ -36,6 +36,13 @@ Pin 16 = !RBEN;
 Pin 15 = D7;
 Pin 14 = !BOARDEN;  /* XXX NEEDS BODGE HERE */
 
+/* Set BASEROM_EN to 1 to enable backfilling of ROM slots on
+ * the main board. Remove all of the main board ROMs if you
+ * set this to 1.
+ */
+
+BASEROM_EN = 'b'1;
+
 /* temporarily use D000 instead of 9000 */
 
 ADDR_9XXX = A15 & A14 & !A13 & A12;
@@ -46,18 +53,22 @@ ADDR_ROM = ADDR_9XXX & A11 & (A10 # A9 # A8);   /* 9900 to 9FFF */
 ADDR_CRTC = ADDR_IO & (!A7);                    /* 9800 to 987F */
 ADDR_DISPEN = ADDR_IO & A7;                     /* 9880 to 98FF */
 
+ADDR_BASEROM = (BASEROM_EN & A15 & A14 & A13) #              /* E000 to FFFF */
+               (BASEROM_EN & A15 & A14 & !A13 & !A12) #      /* C000 to CFFF */
+               (BASEROM_EN & A15 & !A14 & A13 & A12);        /* B000 to BFFF */
+
 BDIR = R;
 ROUT = R;
 SEL = ADDR_VRAM;
 RBEN = ADDR_VRAM & BO2;
 
-ROM_RD = ADDR_ROM & R & BO2;
+ROM_RD = (ADDR_ROM # ADDR_BASEROM) & R & BO2;
 VRAM_RD = (ADDR_VRAM & R) # (!ADDR_VRAM);  /* XXX verify doesn't use O2 */
 VRAM_WR = ADDR_VRAM & !R & BO2;            /* XXX verify O2 */
 
 DISP_CS = ADDR_CRTC;
 
-BOARDEN = BO2 & ADDR_9XXX;
+BOARDEN = BO2 & (ADDR_9XXX # ADDR_BASEROM);
 
 D7 = DISPEN;
 D7.OE = ADDR_DISPEN & R & BO2;
