@@ -32,7 +32,7 @@ build/monitor.rom:
 
 build/monitor_display.rom: build/monitor.rom
 	cp build/monitor.rom build/monitor_display.rom
-	dd if=../display/J903-001-Z15.bin of=build/basic.rom bs=1 seek=22528 count=2048 conv=notrunc
+	dd if=../display/J903-001-Z15.bin of=build/monitor_display.rom bs=1 seek=22528 count=2048 conv=notrunc
 
 build/basic.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/basic.rom
