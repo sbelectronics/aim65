@@ -1,5 +1,7 @@
 # Offsets start at 0x8000
 #
+# 9000 - 4096
+# 9800 = 6144
 # B000 = 12288
 # C000 = 16384
 # D000 = 20480
@@ -32,7 +34,8 @@ build/monitor.rom:
 
 build/monitor_display.rom: build/monitor.rom
 	cp build/monitor.rom build/monitor_display.rom
-	dd if=../display/J903-001-Z15.bin of=build/monitor_display.rom bs=1 seek=22528 count=2048 conv=notrunc
+	dd if=../display/reloc9800.bin of=build/monitor_display.rom bs=1 seek=6144 count=2048 conv=notrunc
+	#dd if=../display/J903-001-Z15.bin of=build/monitor_display.rom bs=1 seek=22528 count=2048 conv=notrunc
 
 build/basic.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/basic.rom

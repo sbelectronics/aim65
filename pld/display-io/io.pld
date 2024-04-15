@@ -45,7 +45,7 @@ BASEROM_EN = 'b'1;
 
 /* temporarily use D000 instead of 9000 */
 
-ADDR_9XXX = A15 & A14 & !A13 & A12;
+ADDR_9XXX = A15 & !A14 & !A13 & A12;
 ADDR_VRAM = ADDR_9XXX & !A11;                   /* 9000 to 97FF */
 ADDR_IO = ADDR_9XXX & A11 & !A10 & !A9 & !A8;   /* 9800 to 98FF */
 ADDR_ROM = ADDR_9XXX & A11 & (A10 # A9 # A8);   /* 9900 to 9FFF */
