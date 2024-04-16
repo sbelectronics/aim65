@@ -41,17 +41,21 @@ build/basic.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/basic.rom
 	dd if=../roms/R3226-11-basic-B.bin of=build/basic.rom bs=1 seek=12288 count=4096 conv=notrunc
 	dd if=../roms/R3225-11-basic-C.bin of=build/basic.rom bs=1 seek=16384 count=4096 conv=notrunc
+	# Move basic program and variable start to after 0400 to make room for display vars
+	python ./patch.py build/basic.rom cf71:11=00 cf73:02=04
 
 build/extbasic.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/extbasic.rom
 	dd if=../roms/EXTENDED-BASIC-V2.3-Z26-B.bin of=build/extbasic.rom bs=1 seek=12288 count=4096 conv=notrunc
-	dd if=../roms/EXTENDED-BASIC-V2.3-Z25-C.bin of=build/extbasic.rom bs=1 seek=16384 count=4096 conv=notrunc	
-	dd if=../roms/EXTENDED-BASIC-V2.3-Z24-D.bin of=build/extbasic.rom bs=1 seek=20480 count=4096 conv=notrunc	
+	dd if=../roms/EXTENDED-BASIC-V2.3-Z25-C.bin of=build/extbasic.rom bs=1 seek=16384 count=4096 conv=notrunc
+	dd if=../roms/EXTENDED-BASIC-V2.3-Z24-D.bin of=build/extbasic.rom bs=1 seek=20480 count=4096 conv=notrunc
 
 build/forth.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/forth.rom
 	dd if=../roms/4thz-26.bin of=build/forth.rom bs=1 seek=12288 count=4096 conv=notrunc
 	dd if=../roms/4thz-25.bin of=build/forth.rom bs=1 seek=16384 count=4096 conv=notrunc
+	# move TASK from 0300 to 0400 to make room for display vars
+	python ./patch.py build/forth.rom wb00A:0300=0400 wB028:0300=0400 wC295:0300=0400 wb01C:030B=040B wb01A:0300=0400
 
 build/pl65.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/pl65.rom
