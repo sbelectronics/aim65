@@ -25,8 +25,8 @@ Pin 11 = R;
 Pin 13 = BO2;
 
 /* Outputs:  */
-Pin 23 = BDIR;
-Pin 22 = ROUT;
+Pin 23 = !PRAM_RD;
+Pin 22 = !PRAM_WR;
 Pin 21 = !SEL;
 Pin 20 = !VRAM_RD;
 Pin 19 = !VRAM_WR;
@@ -43,6 +43,13 @@ Pin 14 = !BOARDEN;  /* XXX NEEDS BODGE HERE */
 
 BASEROM_EN = 'b'1;
 
+/* Set PRAM_EN to 1 to enable supplying RAM from 0x1000
+ * to 0x7FFF. Motherboard RAM ICs stay in place to supply
+ * 0x0000 to 0xFFF.
+ */
+
+PRAM_EN = 'b'1;
+
 /* temporarily use D000 instead of 9000 */
 
 ADDR_9XXX = A15 & !A14 & !A13 & A12;
@@ -57,18 +64,22 @@ ADDR_BASEROM = (BASEROM_EN & A15 & A14 & A13) #              /* E000 to FFFF */
                (BASEROM_EN & A15 & A14 & !A13 & !A12) #      /* C000 to CFFF */
                (BASEROM_EN & A15 & !A14 & A13 & A12);        /* B000 to BFFF */
 
-BDIR = R;
-ROUT = R;
+ADDR_PRAM = (PRAM_EN & !A15 & A14) #                         /* 4000 to 7FFF */
+            (PRAM_EN & !A15 & !A14 & A13) #                  /* 2000 to 3FFF */
+            (PRAM_EN & !A15 & !A14 & !A13 & A12);            /* 1000 to 1FFF */
+
 SEL = ADDR_VRAM;
 RBEN = ADDR_VRAM & BO2;
 
+PRAM_RD = ADDR_PRAM & R;                   /* doesn't require BO2 because BOARDEN already qualfies that */
+PRAM_WR = ADDR_PRAM & !R & BO2;
 ROM_RD = (ADDR_ROM # ADDR_BASEROM) & R & BO2;
-VRAM_RD = (ADDR_VRAM & R) # (!ADDR_VRAM);  /* XXX verify doesn't use O2 */
-VRAM_WR = ADDR_VRAM & !R & BO2;            /* XXX verify O2 */
+VRAM_RD = (ADDR_VRAM & R) # (!ADDR_VRAM);  /* doesn't require BO2 because BOARDEN already qualfies that */
+VRAM_WR = ADDR_VRAM & !R & BO2;
 
 DISP_CS = ADDR_CRTC;
 
-BOARDEN = BO2 & (ADDR_9XXX # ADDR_BASEROM);
+BOARDEN = BO2 & (ADDR_9XXX # ADDR_BASEROM # ADDR_PRAM);
 
 D7 = DISPEN;
 D7.OE = ADDR_DISPEN & R & BO2;
