@@ -9,3 +9,5 @@ not behind it.
 * rom-scott/ ... Multi-banked ROM file for display board
 
 * backplane/ ... various backplane boards. Needed to place the display board on top of the AIM-65.
+
+* tape-rs232-c1541/ ... application board for tape, RS232, and commodore 1541 AH5050. Largely untested.
