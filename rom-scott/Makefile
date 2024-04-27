@@ -34,8 +34,13 @@ build/monitor.rom:
 
 build/monitor_display.rom: build/monitor.rom
 	cp build/monitor.rom build/monitor_display.rom
-	dd if=../display/reloc9800.bin of=build/monitor_display.rom bs=1 seek=6144 count=2048 conv=notrunc
+	#dd if=../display/reloc9800.bin of=build/monitor_display.rom bs=1 seek=6144 count=2048 conv=notrunc
+	dd if=../display/CRTCROM-hugo.bin of=build/monitor_display.rom bs=1 seek=6144 count=2048 conv=notrunc  
 	#dd if=../display/J903-001-Z15.bin of=build/monitor_display.rom bs=1 seek=22528 count=2048 conv=notrunc
+	# Adjust to 21 rows because Scott's monitor's last line is cut off
+	#python ./patch.py build/monitor_display.rom 9F8C:16=15 9F9F:16=15 w9F90:0630=05E8
+	# Put in the 72x22 row from Hugo's ROM
+	#python ./patch.py build/monitor_display.rom 9F87:50=48 9F88:59=55 9F8A:19=1A 9F8C:18=16 9F8E:50=48 9F8F:18=16 w9F90:0780=0630
 
 build/basic.rom: build/monitor_display.rom
 	cp build/monitor_display.rom build/basic.rom
