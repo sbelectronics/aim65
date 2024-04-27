@@ -61,6 +61,7 @@ ADDR_CRTC = ADDR_IO & (!A7);                    /* 9800 to 987F */
 ADDR_DISPEN = ADDR_IO & A7;                     /* 9880 to 98FF */
 
 ADDR_BASEROM = (BASEROM_EN & A15 & A14 & A13) #              /* E000 to FFFF */
+               (BASEROM_EN & A15 & A14 & !A13 & A12) #       /* D000 to DFFF */
                (BASEROM_EN & A15 & A14 & !A13 & !A12) #      /* C000 to CFFF */
                (BASEROM_EN & A15 & !A14 & A13 & A12);        /* B000 to BFFF */
 
