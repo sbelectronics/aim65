@@ -1,0 +1,45 @@
+Name addr;
+Partno G22V10#2;
+Revision;
+Date 09/1/2023;
+Designer Scott Baker;
+Company ;
+Location ;
+Assembly AIM-65 FDC Addr;
+Device G22V10;
+
+/* Inputs: */
+Pin 1  = !ROMEN;
+Pin 2  = A15;
+Pin 3  = A14;
+Pin 4  = A13;
+Pin 5  = A12;
+Pin 6  = A11;
+Pin 7  = A10;
+Pin 8  = A9;
+Pin 9  = A8;
+Pin 10 = A7;
+Pin 11 = A6;
+Pin 13 = A5;
+
+/* Outputs:  */
+Pin 23 = !CSFDC;
+Pin 22 = !CSDCSR;
+Pin 21 = !CSROM;
+Pin 20 = A0_OUT;
+Pin 19 = A1_OUT;
+Pin 18 = A0;
+Pin 17 = A1;
+Pin 16 = A2;
+Pin 15 = A3;
+Pin 14 = A4;
+
+FIELD ADDR = [A15..A0];
+
+CSFDC = (ADDR:8F00) # (ADDR:8F01) # (ADDR:8F02) # (ADDR:8F03);
+CSDCSR = (ADDR:8F04) # (ADDR:8F15);  /* logic ROM will use A0 to determine which is which */
+CSROM = ROMEN & (ADDR:8XXX) & (!(ADDR:8FXX));
+
+A0_OUT = A0;
+A1_OUT = A1;
+

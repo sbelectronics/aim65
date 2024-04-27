@@ -1,0 +1,56 @@
+Name logic;
+Partno G22V10#2;
+Revision;
+Date 09/1/2023;
+Designer Scott Baker;
+Company ;
+Location ;
+Assembly AIM-65 FDC Logic;
+Device G22V10;
+
+/* Inputs: */
+Pin 1  = !RESET;
+Pin 2  = !CSFDC;
+Pin 3  = !CSDCSR;
+Pin 4  = !CSROM;
+Pin 5  = O2;
+Pin 6  = R;
+Pin 7  = DRQL;
+Pin 8  = FPINTR;
+Pin 9  = FLOPNQ;
+Pin 10 = FPINTQ;
+Pin 11 = A0;       /* bodge to A0 */
+Pin 13 = STOPEN;   /* bodge to stopen */
+
+/* Outputs:  */
+Pin 23 = FLOPD;
+Pin 22 = INT;
+Pin 21 = READY;
+Pin 20 = DCRCLK;
+Pin 19 = !DSR;
+Pin 18 = NC2;
+Pin 17 = NC3;
+Pin 16 = !WR;
+Pin 15 = !RD;
+Pin 14 = !BOARDEN;
+
+BOARDEN = CSFDC # CSDCSR # CSROM;
+
+WR = O2 & !R;
+RD = O2 & R;
+
+/* CSDCSR will match DCR, DSR, and STOP
+ * we can use A0 to tell if it's DCR/DSR or STOP
+ */
+
+/* low-to-high transition on DCRCLK will clock the current
+ * data on the bus into the DCR.
+ */
+
+DCRCLK = !(CSDCSR & O2 & !R & !A0);
+DSR = (CSDCSR & O2 & R & !A0);
+
+FLOPD = DRQL # FPINTR;
+READY = !(FLOPNQ & CSDCSR & A0 & STOPEN);
+
+/* CS for READY = (BOARDIO & A0 & !A1 & !A3 & A4 ) matches 8F11, 8F15, and more stuff */
