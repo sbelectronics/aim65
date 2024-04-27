@@ -1,13 +1,18 @@
 resources:
   * http://cini.classiccmp.org//systems.htm
 
+Serial
+  * Set baud rate 2400: A417=01, A418=5D 
+  * Toggle the tty switch
+  * Push a key
+  * Use 2400,7,E,1 on terminal
+
 Bus
   * W = not-R/!W - appears to be an inverted R/!W
   * V = sys R/!W - not-R/!W inverted
   * Z = ram R/!W - not-sys-R/!W nand SYS_O2
   * U = SYS_O2 - not-O2 inverted
   * Y = not-O2 - the O2 from the CPU, inverted
-
 
 Possible Basic set of start program
   cf70: a2 11     ldx #$11
