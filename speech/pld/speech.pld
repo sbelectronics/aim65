@@ -1,0 +1,55 @@
+Name speech;
+Partno G22V10#2;
+Revision;
+Date 09/1/2023;
+Designer Scott Baker;
+Company ;
+Location ;
+Assembly AIM-65 Speech;
+Device G22V10;
+
+/* Inputs: */
+Pin 1  = !RESET;
+Pin 2  = A15;
+Pin 3  = A14;
+Pin 4  = A13;
+Pin 5  = A12;
+Pin 6  = A11;
+Pin 7  = A10;
+Pin 8  = A9;
+Pin 9  = A8;
+Pin 10 = A7;
+Pin 11 = R;
+Pin 13 = BO2;
+
+/* Outputs:  */
+Pin 23 = !ALD;
+Pin 22 = SBY;
+Pin 21 = !LRQ;
+Pin 20 = D0;
+Pin 19 = SPC_INT;
+Pin 18 = A3;  /* alternative: INTEN */
+Pin 17 = A4;
+Pin 16 = A5;
+Pin 15 = A6;
+Pin 14 = !BOARDEN;
+
+/*FIELD ADDR = [A15..A4];
+
+SPEECH_CS = (ADDR:8FFX);
+SPEECH_INTEN_CS = (ADDR:8FEX);*/
+
+SPEECH_CS = (A15 & !A14 & !A13 & !A12 & A11 & A10 & A9 & A8 & A7 & A6 & A5 & A4);
+SPEECH_INTEN_CS = (A15 & !A14 & !A13 & !A12 & A11 & A10 & A9 & A8 & A7 & A6 & A5 & !A4);
+
+BOARDEN = BO2 & SPEECH_CS;
+ALD = BO2 & SPEECH_CS & !R;
+
+D0 = LRQ;
+D0.OE = SPEECH_CS & R & BO2;
+
+/*
+INTEN = (!RESET & INTEN & !SPEECH_INTEN_CS) # (!RESET & SPEECH_INTEN_CS & !R & BO2 & D0);
+SPC_INT = 'b'1;
+SPC_INT.OE = LRQ & INTEN;
+*/
